@@ -20,22 +20,26 @@ const Form = ({ onFeedBackAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // const res = await fetch("/api/feedback", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (res.ok) {
-        setMessage("Feedback added successfully");
-        setMessageType("success");
-        setformData({ name: "", email: "", feedback: "" });
+      const existing = JSON.parse(localStorage.getItem("feedbacks")) || [];
 
-        if (onFeedBackAdded) {
-          onFeedBackAdded();
-        }
+      const updated = [...existing, formData];
+
+      localStorage.setItem("feedbacks", JSON.stringify(updated));
+
+      setMessage("Feedback added successfully ✅");
+      setMessageType("success");
+      setformData({ name: "", email: "", feedback: "" });
+
+      if (onFeedBackAdded) {
+        onFeedBackAdded();
       } else {
         setMessage("Something went wrong");
         setMessageType("failed");
